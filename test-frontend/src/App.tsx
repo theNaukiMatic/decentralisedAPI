@@ -1,6 +1,5 @@
 import React, { useEffect, useReducer, useState } from "react";
 import Gun from "gun";
-import { randomUUID } from "crypto";
 
 interface SessionData {
 	messages: Array<SampleMessage>;
@@ -12,7 +11,7 @@ interface SampleMessage {
 }
 
 //initiallising gun and connecting to peers
-const peerList = ["http://localhost:5000/gun"];
+const peerList = ["http://localhost:5000/gun", "http://localhost:3002/gun"];
 const gun = Gun({
 	peers: peerList,
 });
