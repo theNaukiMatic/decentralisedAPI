@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Vendor ScoreCard</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        #report {
+            border-collapse: collapse;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 30px;
+        }
+
+        a {
+            color: #bf0711;
+            background-color: transparent;
+            text-decoration: none;
+        }
+
+        #report td,
+        #report th {
+            border: 1px solid #ddd;
+            padding: 5px;
+        }
+
+        #report tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        #report tr:hover {
+            background-color: #ddd;
+        }
+
+        #report th {
+            text-align: center;
+            background-color: #bf0711;
+            color: white;
+        }
+
+        .column {
+            float: left;
+            width: 50%;
+            padding: 10px;
+            height: 200px;
+        }
+
+        .row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+    </style>
+</head>
+
+<body style="max-width: 960px; overflow-wrap: break-word">
+<div style="font-family: Arial; color: #000000">
+    <div style="display: block; padding-left: 30px">
+        <!-- <img
+					src="https://www.udaan.com/hooks/newSeller/communication/seen/{{externalId}}"
+					style="visibility: hidden; width: 1px; height: 1px"
+				/> -->
+        <div style="
+						background-color: #bf0711;
+						height: 10px;
+						margin-bottom: 20px;
+					"></div>
+        <div style="display: block; text-align: center">
+            <div style="display: inline-block; width: 90%">
+                <p style="color: #000000; font-size: 1.5em">
+                    Dear {{vendorName}},<br/>
+                    Your Scorecard for {{Month}} :
+                </p>
+                <table id="report">
+                    {{#happyFlowReports}}
+                        <tr>
+                            <th>Vertical</th>
+                            <th>Attribute</th>
+                            <th>Weightage</th>
+                            <th>Score</th>
+                        </tr>
+                        <tr>
+                            <td rowspan="8">{{vertical}}</td>
+                            <td>Fill Rate</td>
+                            <td>{{frWeight}}</td>
+                            <td>{{fillRate}}</td>
+                        </tr>
+                        <tr>
+                            <td>Total Sales</td>
+                            <td>{{gmvWeight}}</td>
+                            <td>{{gmv}}</td>
+                        </tr>
+                        <tr>
+                            <td>Lead Times</td>
+                            <td>{{ltWeight}}</td>
+                            <td>{{leadTime}}</td>
+                        </tr>
+                        <tr>
+                            <td>QC Reject</td>
+                            <td>{{qcrWeight}}</td>
+                            <td>{{qcReject}}</td>
+                        </tr>
+                        <tr>
+                            <td>Excess Reject</td>
+                            <td>{{erWeight}}</td>
+                            <td>{{excessReject}}</td>
+                        </tr>
+                        <tr>
+                            <td>RTV</td>
+                            <td>{{rtvWeight}}</td>
+                            <td>{{rtv}}</td>
+                        </tr>
+                        <tr>
+                            <td>Buyer Penetration</td>
+                            <td>{{bpWeight}}</td>
+                            <td>{{buyerPenetration}}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Overall Score</td>
+                            <td>{{overallScore}}</td>
+                        </tr>
+                    {{/happyFlowReports}}
+                </table>
+            </div>
+            <p>
+                To see detailed scorecard on the vendor portal
+                <a href="http://localhost:7060/statistics" target="_blank">click here</a>
+            </p>
+
+        </div>
+    </div>
+    <div style="
+        background-color: #bf0711;
+        height: 10px;
+        margin-bottom: 20px;
+    "></div>
+</div>
+</body>
+
+</html>

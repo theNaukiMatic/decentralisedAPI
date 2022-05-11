@@ -147,7 +147,7 @@ export class Spores {
 	}
 
 	//Make the distributed call with syntax of traditional http/https call
-	 CALL(req: Request_Arguments): any {
+	 async CALL(req: Request_Arguments): Promise<any> {
 		this.logCall(req);
 		try{
 			// const semaphore = new AsyncSemaphore(100)
