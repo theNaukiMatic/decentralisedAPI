@@ -10,6 +10,8 @@
     "@types/node": "^16.11.27",
     "@types/react": "^18.0.6",
     "@types/react-dom": "^18.0.2",
+    "crypto": "^1.0.1",
+    "crypto-ts": "^1.0.2",
     "gun": "^0.2020.1236",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",

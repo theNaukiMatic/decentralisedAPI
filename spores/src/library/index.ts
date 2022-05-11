@@ -1,4 +1,8 @@
 import Gun from "gun";
+var CryptoTS = require("crypto-ts");
+
+
+const secretKey = 'vOVH6sdmpNWjRRIqCc7rdxs01lwHzfr3';
 
 /*
 -------------------------------------------------------------------------------------------------
@@ -224,4 +228,16 @@ export class Spores {
 			console.log("Request finished processing.");
 		}
 	}
+
+	encrypt(text: any) {
+		text = JSON.stringify(text)
+		const cipher = CryptoTS.AES.encrypt(text, secretKey);
+		return cipher
+	}
+	
+	decrypt(hash : any ) {
+		const bytes = CryptoTS.AES.decrypt(hash, secretKey);
+		return JSON.parse(bytes.toString(CryptoTS.enc.Utf8));
+	}
+
 }
