@@ -1,4 +1,5 @@
 import Gun from "gun";
+var CryptoTS = require("crypto-ts");
 
 /*
 -------------------------------------------------------------------------------------------------
@@ -53,6 +54,7 @@ export class Spores {
 		peers: this.peerList,
 	});
 	private database: string = "";
+	private secretKey = "vOVH6sdmpNWjRRIqCc7rdxs01lwHzfr3";
 
 	constructor(peerList: Array<string>, database: string) {
 		this.updatePeerList(peerList);
@@ -61,6 +63,14 @@ export class Spores {
 
 	getCurrentDataBase(): string {
 		return this.database;
+	}
+
+	getSeceretKey(): string {
+		return this.secretKey;
+	}
+
+	setSeceretKey(input: string) {
+		this.secretKey = input;
 	}
 
 	//change the current database name
@@ -80,13 +90,40 @@ export class Spores {
 		});
 	}
 
+	//encryption
+	private encrypt(message: any): any {
+		try {
+			message = JSON.stringify(message);
+			const cipher = CryptoTS.AES.encrypt(message, this.secretKey);
+			return cipher.toString();
+		} catch (e: any) {
+			const error =
+				"there was an error while encrypting the message" +
+				e.toString();
+			console.log(error);
+			throw Error(error);
+		}
+	}
+
+	//decryption
+	private decrypt(hash: any): any {
+		try {
+			const bytes = CryptoTS.AES.decrypt(hash, this.secretKey);
+			return JSON.parse(bytes.toString(CryptoTS.enc.Utf8));
+		} catch (e: any) {
+			const error =
+				"there was an error while decrypting the message" +
+				e.toString();
+			console.log(error);
+			throw Error(error);
+		}
+	}
+
 	private applyQueryLineItem(
 		message: Array<any>,
 		queryLineItem: Query_Line_Item
 	): Array<any> {
-		// console.log("reached here")
-		// console.log(message.length);
-		return message.filter(function (value : any) {
+		return message.filter(function (value: any) {
 			if (value === null) {
 				return false;
 			}
@@ -98,8 +135,7 @@ export class Spores {
 				}
 				case Comparison_Type.NOT_EQUALS: {
 					return (
-						value[queryLineItem.property] !==
-						queryLineItem.value
+						value[queryLineItem.property] !== queryLineItem.value
 					);
 				}
 				case Comparison_Type.LESS_THAN: {
@@ -127,14 +163,14 @@ export class Spores {
 
 	private applyQuery(messages: Array<any>, query: Query | null): Array<any> {
 		if (query == null) {
-			return messages;
+			return messages.map((it) => this.decrypt(it.enc));
 		}
 		var returnObj: Array<Object>;
-		returnObj = messages;
-		// console.log(returnObj);
+		returnObj = messages.map((it) => this.decrypt(it.enc));
+		console.log(returnObj);
 		for (var it of query.lineItems) {
 			returnObj = this.applyQueryLineItem(returnObj, it);
-			// console.log(returnObj);
+			console.log(returnObj);
 		}
 		return returnObj;
 	}
@@ -147,26 +183,32 @@ export class Spores {
 	}
 
 	//Make the distributed call with syntax of traditional http/https call
-	 async CALL(req: Request_Arguments): Promise<any> {
+	async CALL(req: Request_Arguments): Promise<any> {
 		this.logCall(req);
-		try{
+		try {
 			// const semaphore = new AsyncSemaphore(100)
-			const gunMessages =  this.gun.get(this.database).get(req.tableName);
-			var messages : Array<Object> = [];
-			 gunMessages.map().on(async (data) => {
+			const gunMessages = this.gun.get(this.database).get(req.tableName);
+			var messages: Array<Object> = [];
+			gunMessages.map().on(async (data) => {
 				if (data !== null) {
-					messages.push(data)
+					messages.push(data);
 				}
 			});
-			// console.log("line 175")
-			// console.log({messages});
 
 			switch (req.type) {
 				case Request_Type.POST: {
 					const id = Math.random().toString(36).substr(2, 9);
+					console.log({
+						enc: this.encrypt({
+							...req.message,
+							__id: id,
+						}),
+					});
 					gunMessages.get(id).put({
-						...req.message,
-						__id: id,
+						enc: this.encrypt({
+							...req.message,
+							__id: id,
+						}),
 					});
 					break;
 				}
